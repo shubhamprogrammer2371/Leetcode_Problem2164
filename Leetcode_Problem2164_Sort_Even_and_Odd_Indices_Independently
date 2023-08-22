@@ -1,0 +1,92 @@
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+
+int asc_sort (const void * a, const void * b) {
+   return ( *(int*)a - *(int*)b );
+}
+
+int dsc_sort (const void * a, const void * b) {
+   return ( *(int*)b - *(int*)a );
+}
+
+
+int* sortEvenOdd(int* nums, int numsSize, int* returnSize){
+    int* even_asc_arr = (int *)malloc((numsSize)*sizeof(int));
+    int* odd_dsc_arr = (int *)malloc((numsSize)*sizeof(int));
+    int* ans_arr = (int *)malloc((numsSize)*sizeof(int));
+
+    int even_asc_ind = 0 , odd_dsc_ind = 0;
+    *returnSize = 0;
+    for( int i  = 0 ; i < numsSize ; i++)
+    {
+        if(i&1)
+            odd_dsc_arr[odd_dsc_ind++] = nums[i];
+        else
+            even_asc_arr[even_asc_ind++] = nums[i];
+    }
+    qsort(odd_dsc_arr,odd_dsc_ind,sizeof(int),dsc_sort);
+    qsort(even_asc_arr,even_asc_ind,sizeof(int),asc_sort);
+
+    int i = 0 , j = 0;
+
+    while(i < odd_dsc_ind && j < even_asc_ind )
+    {
+        if((*returnSize)&1)
+        {
+            ans_arr[(*returnSize)++] = odd_dsc_arr[i];
+            i++;
+        }
+        else
+        {
+            ans_arr[(*returnSize)++] = even_asc_arr[j];
+            j++;
+        }
+    }
+    if(j != even_asc_ind)
+        ans_arr[(*returnSize)++] = even_asc_arr[j];
+    if(i != odd_dsc_ind)
+        ans_arr[(*returnSize)++] = odd_dsc_arr[i];
+    free(even_asc_arr);
+    free(odd_dsc_arr);
+    return ans_arr;
+}
+
+
+
+
+--------------------------------------------------------------------------------------------------------------
+
+
+
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int* sortEvenOdd(int* nums, int numsSize, int* returnSize){
+    *returnSize = numsSize;
+    for(int i = 0; i < numsSize; i+=2)
+    {
+        int min_value = i;
+        for(int j = i+2; j < numsSize; j+=2)
+        {
+            if(nums[min_value] > nums[j])
+                min_value = j;
+        }
+        int tmp = nums[i];
+        nums[i] = nums[min_value];
+        nums[min_value] = tmp;
+    }
+    for(int i = 1; i < numsSize; i+=2)
+    {
+        int max_value = i;
+        for(int j = i+2; j < numsSize; j+=2)
+        {
+            if(nums[max_value] < nums[j])
+                max_value = j;
+        }
+        int tmp = nums[i];
+        nums[i] = nums[max_value];
+        nums[max_value] = tmp;
+    }
+    return nums;
+}
